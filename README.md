@@ -4,8 +4,10 @@ SoCal Listings is a full-stack MEN (MongoDB, Express, Node.js) web application t
 
 # Installation 
 - git clone https://github.com/mariacort15/SoCal-Listings-App.git
-- cd SoCal-Listings-App
+- cd Project-2
 - npm install 
 - Create .env and configure
 - npm start
 
+# Configuration 
+Create .env and set:
