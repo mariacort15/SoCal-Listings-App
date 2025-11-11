@@ -1,60 +1,23 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
 
-router.get('/login', (req, res) => {
-  res.render('login');
-});
+const {
+  registerUser,
+  loginUser,
+  logoutUser,
+  getUserProfile,
+} = require("../controllers/authController.js");
 
-
-router.get('/register', (req, res) => {
-  res.render('register');
-});
+const { verifyToken } = require("../middleware/authMiddleware.js");
 
 
-router.post('/register', async (req, res) => {
-  const { name, email, password, role } = req.body;
-  try {
-    const existingUser = await User.findOne({ email });
-    if (existingUser) return res.send('User already exists');
+router.post("/register", registerUser);
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await User.create({
-      name,
-      email,
-      password: hashedPassword,
-      role: role || 'User'
-    });
-
-    res.redirect('/auth/login');
-  } catch (err) {
-    res.send('Error registering user');
-  }
-});
+router.post("/login", loginUser);
 
 
-router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    const user = await User.findOne({ email });
-    if (!user) return res.send('User not found');
+router.post("/logout", logoutUser);
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.send('Invalid credentials');
+router.get("/me", verifyToken, getUserProfile);
 
-
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: '1d'
-    });
-
-    res.cookie('token', token, {
-      httpOnly: true,
-    });
-
-    res.redirect('/owner/dashboard'); 
-  } catch (err) {
-    res.send('Login error');
-  }
-});
+module.exports = router;

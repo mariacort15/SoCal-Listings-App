@@ -1,35 +1,73 @@
-<%- include('../partials/_navbar') %>
+<% layout('layouts/layout') %>
 
-<section class="grid">
-  <% properties.forEach(property => { %>
-    <div class="card" data-id="<%= property._id %>">
-      <img src="<%= property.image %>" alt="<%= property.title %>">
-      <h2><%= property.title %></h2>
-      <p class="price">$<%= property.price.toLocaleString() %></p>
-      <p><%= property.city %> — <%= property.propertyType %></p>
-      <small><%= property.bedrooms %> Beds • <%= property.bathrooms %> Baths</small>
-      <p><%= property.description %></p>
+<section class="properties-section">
+  <h2 class="page-title">Available Properties</h2>
 
-      <div class="buttons">
-        <a href="/properties/<%= property._id %>" class="view-btn">View</a>
-        <button class="edit-btn">Edit</button>
-        <button class="delete-btn" data-id="<%= property._id %>">Delete</button>
-      </div>
+  <% if (properties.length === 0) { %>
+    <p>No properties available yet.</p>
+  <% } else { %>
+    <div class="property-grid">
+      <% properties.forEach(property => { %>
+        <div class="property-card">
+          <img 
+            src="<%= property.image || '/images/default-property.jpg' %>" 
+            alt="<%= property.title %>" 
+            class="property-img"
+          />
 
-      
-      <form class="edit-form" style="display:none;">
-        <input type="text" name="title" value="<%= property.title %>">
-        <input type="number" name="price" value="<%= property.price %>">
-        <input type="text" name="city" value="<%= property.city %>">
-        <input type="number" name="bedrooms" value="<%= property.bedrooms %>">
-        <input type="number" name="bathrooms" value="<%= property.bathrooms %>">
-        <textarea name="description"><%= property.description %></textarea>
-        <button type="submit">Save</button>
-        <button type="button" class="cancel-btn">Cancel</button>
-      </form>
+          <div class="property-info">
+            <h3><%= property.title %></h3>
+            <p><%= property.city %>, <%= property.state || 'CA' %></p>
+            <p class="price">$<%= property.price.toLocaleString() %></p>
+            <p><%= property.bedrooms %> Beds • <%= property.bathrooms %> Baths</p>
+
+            <a href="/properties/<%= property._id %>" class="btn btn-info">View Details</a>
+          </div>
+        </div>
+      <% }) %>
     </div>
-  <% }) %>
+  <% } %>
 </section>
 
-<script src="/js/main.js"></script>
-<%- include('../partials/_footer') %>
+<style>
+  .properties-section {
+    width: 90%;
+    margin: 2rem auto;
+    max-width: 1200px;
+  }
+  .property-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  .property-card {
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+  .property-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+  }
+  .property-info {
+    padding: 1rem;
+  }
+  .price {
+    color: #0077cc;
+    font-weight: bold;
+  }
+  .btn {
+    display: inline-block;
+    margin-top: 0.5rem;
+    background-color: #003366;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+  }
+  .btn:hover {
+    opacity: 0.9;
+  }
+</style>

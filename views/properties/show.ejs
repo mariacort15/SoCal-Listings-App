@@ -1,154 +1,172 @@
-<%- include('../partials/_navbar') %>
+<% layout('layouts/layout') %>
 
-<script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "RealEstateListing",
-    "name": "<%= property.title %>",
-    "description": "<%= property.description %>",
-    "url": "https://localhost:5000/properties/<%= property._id %>",
-    "datePosted": "<%= property.datePosted.toISOString() %>",
-    "mainEntityOfPage": "https://localhost:5000/properties/<%= property._id %>",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "<%= property.address.street %>",
-      "addressLocality": "<%= property.city %>",
-      "addressRegion": "CA",
-      "postalCode": "<%= property.address.zipCode %>",
-      "addressCountry": "US"
-    },
-    "image": [
-      "<%= property.image %>"
-    ],
-    "offers": {
-      "@type": "Offer",
-      "price": "<%= property.price %>",
-      "priceCurrency": "USD",
-      "availability": "https://schema.org/InStock"
-    },
-    "seller": {
-      "@type": "RealEstateAgent",
-      "name": "<%= property.owner?.username || 'Property Owner' %>",
-      "email": "info@socallistings.com"
-    }
-  }
-  </script>
-
-  RealEstateListing  
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "RealEstateListing",
-  "name": "3-Bedroom House in Los Angeles",
-  "description": "A beautiful 3-bedroom, 2-bathroom house with a spacious backyard and pool in Los Angeles.",
-  "url": "https://socallistings.com/listings/12345",
-  "datePosted": "2025-11-04",
-  "mainEntityOfPage": "https://socallistings.com/listings/12345",
+  "name": "<%= property.title %>",
+  "description": "<%= property.description %>",
+  "url": "https://socallistings.com/properties/<%= property._id %>",
+  "datePosted": "<%= property.datePosted.toISOString() %>",
   "address": {
     "@type": "PostalAddress",
-    "streetAddress": "123 Sunset Blvd",
-    "addressLocality": "Los Angeles",
+    "streetAddress": "<%= property.address.street %>",
+    "addressLocality": "<%= property.city %>",
     "addressRegion": "CA",
-    "postalCode": "90028",
+    "postalCode": "<%= property.address.zipCode %>",
     "addressCountry": "US"
   },
-  "image": [
-    "https://socallistings.com/images/listings/12345/main.jpg"
-  ],
+  "image": ["<%= property.image %>"],
   "offers": {
     "@type": "Offer",
-    "price": "1250000",
+    "price": "<%= property.price %>",
     "priceCurrency": "USD",
     "availability": "https://schema.org/InStock"
   },
   "seller": {
     "@type": "RealEstateAgent",
-    "name": "Jane Doe",
-    "telephone": "+1-555-555-5555",
-    "email": "jane@socallistings.com"
+    "name": "<%= property.owner?.username || 'Property Owner' %>",
+    "email": "info@socallistings.com"
   }
 }
 </script>
 
-Place  
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Place",
-  "name": "3-Bedroom House in Los Angeles",
-  "geo": {
-    "@type": "GeoCoordinates",
-    "latitude": 34.0522,
-    "longitude": -118.2437
-  },
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "123 Sunset Blvd",
-    "addressLocality": "Los Angeles",
-    "addressRegion": "CA",
-    "postalCode": "90028",
-    "addressCountry": "US"
-  }
-}
-</script>
-
-Product  
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Product",
-  "name": "3-Bedroom House in Los Angeles",
-  "description": "A beautifully maintained home with 3 bedrooms and 2 bathrooms in the heart of Los Angeles.",
-  "image": [
-    "https://socallistings.com/images/listings/12345/main.jpg"
-  ],
-  "offers": {
-    "@type": "Offer",
-    "priceCurrency": "USD",
-    "price": "1250000",
-    "availability": "https://schema.org/InStock",
-    "url": "https://socallistings.com/listings/12345"
-  }
-}
-</script>
-
-<section class="property-details">
-  <div class="property-image">
-    <img src="<%= property.image %>" alt="<%= property.title %>">
+<section class="property-show">
+  <div class="property-header">
+    <img src="<%= property.image || '/images/default-property.jpg' %>" alt="<%= property.title %>" class="property-main-img" />
+    <div class="property-header-info">
+      <h1><%= property.title %></h1>
+      <p class="property-location"><i class="fas fa-map-marker-alt"></i> <%= property.city %>, CA</p>
+      <p class="property-price">$<%= property.price.toLocaleString() %></p>
+    </div>
   </div>
 
-  <div class="property-info">
-    <h1><%= property.title %></h1>
-    <h3><%= property.city %></h3>
-    <p class="price">$<%= property.price.toLocaleString() %>/month</p>
+  <div class="property-content">
+    <div class="property-info">
+      <h3>Details</h3>
+      <ul>
+        <li><strong>Type:</strong> <%= property.propertyType %></li>
+        <li><strong>Address:</strong> <%= property.address.street %></li>
+        <li><strong>Bedrooms:</strong> <%= property.bedrooms %></li>
+        <li><strong>Bathrooms:</strong> <%= property.bathrooms %></li>
+        <li><strong>Posted:</strong> <%= property.datePosted.toDateString() %></li>
+      </ul>
 
-    <p><strong>Type:</strong> <%= property.propertyType %></p>
-    <p><strong>Address:</strong> <%= property.address %></p>
-    <p><strong>Bedrooms:</strong> <%= property.bedrooms %></p>
-    <p><strong>Bathrooms:</strong> <%= property.bathrooms %></p>
+      <h3>Description</h3>
+      <p><%= property.description %></p>
 
-    <p class="desc"><%= property.description %></p>
+      <div class="property-actions">
+        <a href="/properties" class="btn btn-secondary">← Back to Listings</a>
+        <a href="/contact-owner?propertyId=<%= property._id %>" class="btn btn-info">Contact Owner</a>
+      </div>
 
-    <p class="date-posted">
-      <small>Listed on <%= property.datePosted.toDateString() %></small>
-    </p>
-
-    <% if (property.owner) { %>
-      <p class="owner-info">
-        <strong>Posted by:</strong>
-        <%= property.owner.username || "Property Owner" %>
-      </p>
-    <% } %>
-
-    <div class="actions">
-      <a href="/properties" class="back-btn">Back to Listings</a>
-      <a href="/contact-owner/<%= property.owner?._id %>?propertyId=<%= property._id %>" class="contact-btn">Contact Owner</a>
+      <form action="/api/users/save/<%= property._id %>" method="POST" class="save-form">
+        <button type="submit" class="btn btn-success">❤️ Save Property</button>
+      </form>
     </div>
 
-    <form action="/api/users/save/<%= property._id %>" method="POST">
-      <button type="submit">Save Property</button>
-    </form>
-
+    <aside class="owner-card">
+      <h3>Listing Agent</h3>
+      <img src="<%= property.owner?.profileImage || '/images/default-user.png' %>" alt="<%= property.owner?.username || 'Owner' %>" class="owner-avatar" />
+      <p><strong><%= property.owner?.username || 'Property Owner' %></strong></p>
+      <p>Email: <%= property.owner?.email || 'info@socallistings.com' %></p>
+      <p><strong>Role:</strong> <%= property.owner?.role || 'Owner' %></p>
+    </aside>
+  </div>
 </section>
 
-<%- include('../partials/_footer') %>
+<style>
+  .property-show {
+    width: 90%;
+    margin: 2rem auto;
+    max-width: 1100px;
+  }
+
+  .property-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .property-main-img {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+
+  .property-header-info {
+    margin-top: 1rem;
+  }
+
+  .property-price {
+    color: #0077cc;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  .property-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .property-info h3 {
+    border-bottom: 2px solid #003366;
+    padding-bottom: 0.3rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .property-info ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 1.5rem;
+  }
+
+  .property-info li {
+    margin-bottom: 0.4rem;
+  }
+
+  .property-actions {
+    margin: 1.5rem 0;
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    color: white;
+    text-decoration: none;
+  }
+
+  .btn-info { background-color: #0077cc; }
+  .btn-secondary { background-color: #555; }
+  .btn-success { background-color: #28a745; }
+  .btn:hover { opacity: 0.9; }
+
+  .owner-card {
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+
+  .owner-avatar {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 0.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .property-content {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

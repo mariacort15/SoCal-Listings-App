@@ -1,19 +1,38 @@
-import Property from "../models/Property.js";
-import Message from "../models/Message.js";
+const Property = require("../models/Property.js");
+const Message = require("../models/Message.js");
 
-export const getOwnerDashboard = async (req, res) => {
+const getOwnerDashboard = async (req, res) => {
   try {
     
-    const ownerId = req.user ? req.user._id : "672d88aabc55e7a9d999ce45"; 
+    const ownerId = req.user && req.user.id ? req.user.id : null;
 
-    const properties = await Property.find({ owner: ownerId });
+    if (!ownerId) {
+      
+      return res.redirect("/auth/login");
+    }
 
+    
+    const properties = await Property.find({ owner: ownerId })
+      .sort({ datePosted: -1 });
+
+    
     const messages = await Message.find({ owner: ownerId })
-      .populate("property")
+      .populate("property", "title")
       .sort({ dateSent: -1 });
 
-    res.render("owners/dashboard", { properties, messages });
+    
+    res.render("owners/dashboard", {
+      title: "Owner Dashboard | SoCal Listings",
+      owner: req.user,      
+      properties,
+      messages,
+    });
   } catch (error) {
-    res.status(500).send(error.message);
+    console.error("Error loading Owner Dashboard:", error);
+    res.status(500).send("Server Error: Could not load dashboard");
   }
+};
+
+module.exports = {
+  getOwnerDashboard,
 };

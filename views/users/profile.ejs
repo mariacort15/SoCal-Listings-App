@@ -1,9 +1,58 @@
-<h2>User Profile</h2>
-<p>Name: <%= user.name %></p>
-<p>Email: <%= user.email %></p>
+<% layout('layouts/layout') %>
 
-<form action="/users/update" method="POST">
-  <input type="text" name="name" value="<%= user.name %>" />
-  <input type="email" name="email" value="<%= user.email %>" />
-  <button type="submit">Update Profile</button>
-</form>
+<section class="profile-section">
+  <h2>My Profile</h2>
+
+  <div class="profile-card">
+    <img src="<%= user.profileImage || '/images/default-user.png' %>" alt="<%= user.fullName %>" class="profile-pic" />
+    <h3><%= user.fullName %></h3>
+    <p><strong>Email:</strong> <%= user.email %></p>
+    <p><strong>Role:</strong> <%= user.role %></p>
+    <p><strong>Phone:</strong> <%= user.phone || 'Not provided' %></p>
+  </div>
+
+  <h3>Update Profile</h3>
+  <form action="/users/update" method="POST" class="profile-form">
+    <input type="text" name="fullName" placeholder="Full Name" value="<%= user.fullName %>" required />
+    <input type="email" name="email" placeholder="Email" value="<%= user.email %>" required />
+    <input type="text" name="phone" placeholder="Phone" value="<%= user.phone || '' %>" />
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+  </form>
+</section>
+
+<style>
+  .profile-section {
+    width: 90%;
+    margin: 2rem auto;
+    max-width: 600px;
+    text-align: center;
+  }
+  .profile-card {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+  }
+  .profile-pic {
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    margin-bottom: 1rem;
+  }
+  .profile-form input {
+    width: 100%;
+    margin: 0.5rem 0;
+    padding: 0.7rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  .btn-primary {
+    background-color: #003366;
+    color: #fff;
+    border: none;
+    padding: 0.6rem 1rem;
+    border-radius: 5px;
+  }
+</style>

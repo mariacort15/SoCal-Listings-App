@@ -1,0 +1,58 @@
+
+<header class="main-header">
+    <div class="container">
+      <a href="/" class="logo">
+        <h1>🏠 SoCal Listings</h1>
+      </a>
+  
+      <nav class="nav">
+        <ul>
+          <% if (user) { %>
+            <li>Welcome, <%= user.fullName %>!</li>
+            <% if (user.role === 'Owner' || user.role === 'Admin') { %>
+              <li><a href="/properties/new">Add Property</a></li>
+            <% } %>
+            <li><a href="/users/my-listings">My Listings</a></li>
+            <li><a href="/auth/profile">Profile</a></li>
+            <li><a href="/auth/logout" class="logout-btn">Logout</a></li>
+          <% } else { %>
+            <li><a href="/auth/login">Login</a></li>
+            <li><a href="/auth/signup">Sign Up</a></li>
+          <% } %>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  
+  <style>
+    .main-header {
+      background-color: #003366;
+      padding: 1rem 0;
+      color: white;
+    }
+    .container {
+      width: 90%;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+    .nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1rem;
+      margin: 0;
+    }
+    .nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .logout-btn {
+      color: #ff6666;
+    }
+  </style>

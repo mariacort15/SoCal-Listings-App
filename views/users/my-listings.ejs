@@ -1,13 +1,157 @@
-<h2>My Property Listings</h2>
+<% layout('layouts/layout') %>
 
-<% if (listings.length === 0) { %>
-  <p>No listings posted yet.</p>
-<% } else { %>
-  <ul>
-    <% listings.forEach(property => { %>
-      <li>
-        <strong><%= property.title %></strong> — <%= property.city %> — $<%= property.price %>
-      </li>
-    <% }) %>
-  </ul>
-<% } %>
+<section class="my-listings-section">
+  <div class="header-section">
+    <h2>My Property Listings</h2>
+    <a href="/properties/new" class="btn btn-primary">+ Add New Listing</a>
+  </div>
+
+  <% if (listings.length === 0) { %>
+    <div class="no-listings">
+      <p>You haven’t added any properties yet.</p>
+      <a href="/properties/new" class="btn btn-success">Create Your First Listing</a>
+    </div>
+  <% } else { %>
+    <div class="listings-grid">
+      <% listings.forEach(property => { %>
+        <div class="property-card">
+          <img
+            src="<%= property.imageUrl || '/images/default-property.jpg' %>"
+            alt="<%= property.title %>"
+            class="property-image"
+          />
+          <div class="property-details">
+            <h3><%= property.title %></h3>
+            <p><%= property.city %>, <%= property.state || 'CA' %></p>
+            <p class="price">$<%= property.price.toLocaleString() %></p>
+
+            <div class="card-actions">
+              <a href="/properties/<%= property._id %>" class="btn btn-info btn-sm">View</a>
+              <a href="/properties/<%= property._id %>/edit" class="btn btn-warning btn-sm">Edit</a>
+              <form
+                action="/properties/<%= property._id %>?_method=DELETE"
+                method="POST"
+                class="inline-form"
+              >
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</section>
+
+<style>
+  .my-listings-section {
+    width: 90%;
+    margin: 2rem auto;
+    max-width: 1200px;
+  }
+
+  .header-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+  }
+
+  .header-section h2 {
+    color: #003366;
+    margin: 0;
+  }
+
+  .listings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .property-card {
+    background: #da92c7;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+  }
+
+  .property-card:hover {
+    transform: scale(1.02);
+  }
+
+  .property-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+  }
+
+  .property-details {
+    padding: 1rem;
+  }
+
+  .property-details h3 {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+
+  .price {
+    color: #0077cc;
+    font-weight: bold;
+    margin-top: 0.5rem;
+  }
+
+  .card-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 0.4rem 0.8rem;
+    border-radius: 5px;
+    color: rgb(0, 203, 243);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: opacity 0.2s ease;
+  }
+
+  .btn:hover {
+    opacity: 0.9;
+  }
+
+  .btn-primary {
+    background-color: #003366;
+  }
+
+  .btn-success {
+    background-color: #28a745;
+  }
+
+  .btn-info {
+    background-color: #0077cc;
+  }
+
+  .btn-warning {
+    background-color: #ff9800;
+  }
+
+  .btn-danger {
+    background-color: #d9534f;
+  }
+
+  .btn-sm {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+  }
+
+  .no-listings {
+    text-align: center;
+    margin-top: 2rem;
+  }
+
+  .inline-form {
+    display: inline;
+  }
+</style>

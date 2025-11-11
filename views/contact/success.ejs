@@ -1,9 +1,25 @@
 <%- include('../partials/_navbar') %>
 
 <section class="message-success">
-  <h2>Message Sent!</h2>
-  <p>Thank you, <%= senderName %>. Your message has been sent to <%= owner.username || "the property owner" %>.</p>
-  <a href="/properties" class="back-btn">⬅ Back to Listings</a>
+  <h2>Message Sent ✅</h2>
+
+  <p>
+    Thank you,
+    <strong><%= senderName %></strong>.
+    Your message has been sent to
+    <strong>
+      <%= owner && owner.fullName ? owner.fullName : "the property owner" %>
+    </strong>.
+  </p>
+
+  <% if (owner && owner.email) { %>
+    <p class="hint">
+      A copy has been delivered to the owner’s contact on file. They’ll reach out
+      if the home is a good fit.
+    </p>
+  <% } %>
+
+  <a href="/properties" class="back-btn">← Back to Listings</a>
 </section>
 
 <%- include('../partials/_footer') %>

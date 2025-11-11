@@ -1,5 +1,6 @@
-import mongoose from "mongoose";
-import bcrypt from "bcrypt";
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+
 
 const userSchema = new mongoose.Schema({
   fullName: {
@@ -36,30 +37,26 @@ const userSchema = new mongoose.Schema({
     default:
       "https://res.cloudinary.com/demo/image/upload/v1692380310/default-user.png",
   },
-
   propertiesOwned: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Property",
     },
   ],
-
   propertyRented: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Property",
   },
-
+  savedProperties: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Property",
+    },
+  ],
   createdAt: {
     type: Date,
     default: Date.now,
   },
-  
-  savedProperties: [
-    { 
-      type: mongoose.Schema.Types.ObjectId, 
-      ref: 'Property',
-     }
-    ],
 });
 
 
@@ -74,5 +71,6 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
+
 const User = mongoose.model("User", userSchema);
-export default User;
+module.exports = User;

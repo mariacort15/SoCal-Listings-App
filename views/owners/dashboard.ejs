@@ -1,29 +1,44 @@
-<%- include('../partials/_navbar') %>
+<% layout('layouts/layout') %>
 
 <section class="dashboard">
-  <h1>Owner Dashboard</h1>
-  <p>Welcome back! Here’s an overview of your listings and recent inquiries.</p>
+  <header class="dashboard-header">
+    <h1>Welcome Back, <%= owner.fullName || 'Property Owner' %> 👋</h1>
+    <p>Here’s an overview of your listings and recent inquiries.</p>
+  </header>
 
+  
   <div class="dashboard-section">
     <h2>Your Properties</h2>
 
     <% if (properties.length === 0) { %>
-      <p>You have no properties yet. <a href="/properties/new">Add one here</a>.</p>
+      <p>You currently have no properties listed. 
+        <a href="/properties/new" class="btn btn-primary">+ Add New Property</a>
+      </p>
     <% } else { %>
       <div class="properties-grid">
         <% properties.forEach(property => { %>
           <div class="property-card">
-            <img src="<%= property.image %>" alt="<%= property.title %>">
-            <h3><%= property.title %></h3>
-            <p>$<%= property.price.toLocaleString() %>/month</p>
-            <p><%= property.city %></p>
-            <small>Posted on <%= property.datePosted.toDateString() %></small>
+            <img 
+              src="<%= property.image || '/images/default-property.jpg' %>" 
+              alt="<%= property.title %>" 
+              class="property-img"
+            />
+            <div class="property-info">
+              <h3><%= property.title %></h3>
+              <p class="price">$<%= property.price.toLocaleString() %>/month</p>
+              <p class="city"><%= property.city %></p>
+              <small>Posted on <%= property.datePosted.toDateString() %></small>
+            </div>
 
-            <div class="buttons">
-              <a href="/properties/<%= property._id %>" class="view-btn">View</a>
-              <a href="/properties/<%= property._id %>/edit" class="edit-btn">Edit</a>
-              <form action="/properties/<%= property._id %>?_method=DELETE" method="POST">
-                <button type="submit" class="delete-btn">Delete</button>
+            <div class="property-actions">
+              <a href="/properties/<%= property._id %>" class="btn btn-info btn-sm">View</a>
+              <a href="/properties/<%= property._id %>/edit" class="btn btn-warning btn-sm">Edit</a>
+              <form 
+                action="/properties/<%= property._id %>?_method=DELETE" 
+                method="POST" 
+                class="inline-form"
+              >
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
               </form>
             </div>
           </div>
@@ -32,6 +47,7 @@
     <% } %>
   </div>
 
+  
   <div class="dashboard-section">
     <h2>Recent Messages</h2>
 
@@ -40,9 +56,9 @@
     <% } else { %>
       <ul class="message-list">
         <% messages.forEach(msg => { %>
-          <li>
+          <li class="message-item">
             <p><strong>From:</strong> <%= msg.senderName %> (<%= msg.senderEmail %>)</p>
-            <p><strong>Regarding:</strong> <%= msg.property ? msg.property.title : "Deleted Property" %></p>
+            <p><strong>Regarding:</strong> <%= msg.property ? msg.property.title : 'Deleted Property' %></p>
             <p><strong>Message:</strong> <%= msg.message %></p>
             <small>Sent on <%= msg.dateSent.toDateString() %></small>
           </li>
@@ -52,4 +68,111 @@
   </div>
 </section>
 
-<%- include('../partials/_footer') %>
+
+<style>
+  .dashboard {
+    width: 90%;
+    margin: 2rem auto;
+    max-width: 1200px;
+  }
+
+  .dashboard-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .dashboard-header h1 {
+    color: #003366;
+    margin-bottom: 0.5rem;
+  }
+
+  .dashboard-section {
+    margin-bottom: 3rem;
+  }
+
+  .properties-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .property-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: transform 0.2s ease;
+  }
+
+  .property-card:hover {
+    transform: scale(1.02);
+  }
+
+  .property-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+  }
+
+  .property-info {
+    padding: 1rem;
+  }
+
+  .property-info h3 {
+    margin-bottom: 0.5rem;
+  }
+
+  .price {
+    color: #0077cc;
+    font-weight: bold;
+  }
+
+  .property-actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.8rem 1rem;
+    border-top: 1px solid #eee;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 0.4rem 0.8rem;
+    border-radius: 5px;
+    color: white;
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+
+  .btn-primary { background-color: #003366; }
+  .btn-info { background-color: #0077cc; }
+  .btn-warning { background-color: #ff9800; }
+  .btn-danger { background-color: #d9534f; }
+
+  .btn-sm {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+  }
+
+  .message-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .message-item {
+    background: #fff;
+    border-radius: 6px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+
+  .message-item p {
+    margin: 0.2rem 0;
+  }
+
+  @media (max-width: 768px) {
+    .properties-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

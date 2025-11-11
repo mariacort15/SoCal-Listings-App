@@ -1,39 +1,89 @@
-import Message from "../models/Message.js";
-import Property from "../models/Property.js";
-import User from "../models/User.js";
+const Message = require("../models/Message.js");
+const Property = require("../models/Property.js");
+const User = require("../models/User.js");
 
-// Render contact form
-export const showContactForm = async (req, res) => {
+
+const showContactForm = async (req, res) => {
   try {
-    const owner = await User.findById(req.params.ownerId);
-    const property = await Property.findById(req.query.propertyId);
-    if (!owner) return res.status(404).send("Owner not found");
-    res.render("contact/form", { owner, property });
+    const { ownerId } = req.params;
+    const { propertyId } = req.query;
+
+    const owner = await User.findById(ownerId);
+    if (!owner) {
+      return res.status(404).send("Owner not found.");
+    }
+
+    
+    let property = null;
+    if (propertyId) {
+      property = await Property.findById(propertyId);
+      if (!property) {
+        return res.status(404).send("Property not found.");
+      }
+    }
+
+    
+    res.render("contact/form", {
+      owner,
+      property,
+      title: "Contact Owner | SoCal Listings",
+    });
   } catch (error) {
-    res.status(500).send(error.message);
+    console.error("Error showing contact form:", error);
+    res.status(500).send("Server Error: Unable to load contact form.");
   }
 };
 
-// Handle form submission
-export const sendMessage = async (req, res) => {
-  try {
-    const { senderName, senderEmail, phone, message, propertyId } = req.body;
-    const owner = await User.findById(req.params.ownerId);
 
-    if (!owner) return res.status(404).send("Owner not found");
+const sendMessage = async (req, res) => {
+  try {
+    const { ownerId } = req.params;
+    const { senderName, senderEmail, phone, message, propertyId } = req.body;
+
+    
+    if (!senderName || !senderEmail || !message) {
+      return res
+        .status(400)
+        .send("Name, email, and message are required.");
+    }
+
+    const owner = await User.findById(ownerId);
+    if (!owner) {
+      return res.status(404).send("Owner not found.");
+    }
+
+    let property = null;
+    if (propertyId) {
+      property = await Property.findById(propertyId);
+      if (!property) {
+        return res.status(404).send("Property not found.");
+      }
+    }
 
     const newMessage = new Message({
       senderName,
       senderEmail,
       phone,
       message,
-      property: propertyId,
-      owner: owner._id
+      property: property ? property._id : null,
+      owner: owner._id,
     });
 
     await newMessage.save();
-    res.render("contact/success", { owner, senderName });
+
+   
+    res.render("contact/success", {
+      owner,
+      senderName,
+      title: "Message Sent | SoCal Listings",
+    });
   } catch (error) {
-    res.status(500).send(error.message);
+    console.error("Error sending message:", error);
+    res.status(500).send("Server Error: Unable to send message.");
   }
+};
+
+module.exports = {
+  showContactForm,
+  sendMessage,
 };

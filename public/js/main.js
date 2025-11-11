@@ -1,6 +1,6 @@
 
 document.addEventListener("DOMContentLoaded", () => {
-    // Delete property
+    
     document.querySelectorAll(".delete-btn").forEach((btn) => {
       btn.addEventListener("click", async (e) => {
         const propertyId = e.target.dataset.id;

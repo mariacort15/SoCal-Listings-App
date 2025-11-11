@@ -1,9 +1,13 @@
-import express from "express";
-import { showContactForm, sendMessage } from "../controllers/messageController.js";
-
+const express = require("express");
 const router = express.Router();
 
+const {
+  showContactForm,
+  sendMessage,
+} = require("../controllers/messageController.js");
+
 router.get("/contact-owner/:ownerId", showContactForm);
+
 router.post("/contact-owner/:ownerId", sendMessage);
 
-export default router;
+module.exports = router;
