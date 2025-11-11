@@ -1,0 +1,141 @@
+<%- include('../partials/_navbar') %>
+
+<section class="form-section property-form">
+  <h2>Edit Listing</h2>
+
+  <p class="form-subtitle">
+    Update details for
+    <strong><%= property.title %></strong>
+    in
+    <%= property.city %>.
+  </p>
+
+  <form
+    action="/properties/<%= property._id %>?_method=PUT"
+    method="POST"
+    class="property-form-body"
+  >
+    
+    <div class="form-group">
+      <label for="title">Listing Title</label>
+      <input
+        type="text"
+        id="title"
+        name="title"
+        value="<%= property.title %>"
+        required
+      />
+    </div>
+
+    
+    <div class="form-group">
+      <label for="price">Price (per month)</label>
+      <input
+        type="number"
+        id="price"
+        name="price"
+        value="<%= property.price %>"
+        min="0"
+        required
+      />
+    </div>
+
+    
+    <div class="form-group">
+      <label for="address">Street Address</label>
+      <input
+        type="text"
+        id="address"
+        name="address"
+        value="<%= property.address %>"
+        required
+      />
+    </div>
+
+    
+    <div class="form-group">
+      <label for="city">City</label>
+      <input
+        type="text"
+        id="city"
+        name="city"
+        value="<%= property.city %>"
+        required
+      />
+    </div>
+
+    
+    <div class="form-group">
+      <label for="propertyType">Property Type</label>
+      <select id="propertyType" name="propertyType" required>
+        <option value="">Select type</option>
+        <option value="House" <%= property.propertyType === "House" ? "selected" : "" %>>House</option>
+        <option value="Apartment" <%= property.propertyType === "Apartment" ? "selected" : "" %>>Apartment</option>
+        <option value="Condo" <%= property.propertyType === "Condo" ? "selected" : "" %>>Condo</option>
+        <option value="Studio" <%= property.propertyType === "Studio" ? "selected" : "" %>>Studio</option>
+      </select>
+    </div>
+
+    
+    <div class="form-group">
+      <label for="bedrooms">Bedrooms</label>
+      <input
+        type="number"
+        id="bedrooms"
+        name="bedrooms"
+        value="<%= property.bedrooms %>"
+        min="0"
+      />
+    </div>
+
+    
+    <div class="form-group">
+      <label for="bathrooms">Bathrooms</label>
+      <input
+        type="number"
+        id="bathrooms"
+        name="bathrooms"
+        value="<%= property.bathrooms %>"
+        min="0"
+        step="0.5"
+      />
+    </div>
+
+    
+    <div class="form-group">
+      <label for="image">Image URL</label>
+      <input
+        type="url"
+        id="image"
+        name="image"
+        value="<%= property.image %>"
+        placeholder="https://..."
+      />
+      <% if (property.image) { %>
+        <div class="image-preview">
+          <img src="<%= property.image %>" alt="Current image for <%= property.title %>" />
+        </div>
+      <% } %>
+    </div>
+
+    
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea
+        id="description"
+        name="description"
+        rows="5"
+        required
+      ><%= property.description %></textarea>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn primary-btn">Save Changes</button>
+      <a href="/properties/<%= property._id %>" class="btn secondary-btn">
+        Cancel
+      </a>
+    </div>
+  </form>
+</section>
+
+<%- include('../partials/_footer') %>

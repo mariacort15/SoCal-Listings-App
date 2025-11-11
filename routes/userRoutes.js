@@ -1,16 +1,16 @@
 const express = require("express");
 const router = express.Router();
-const { protect } = require("../middleware/authMiddleware");
+const { verifyToken } = require("../middleware/authMiddleware");
 const User = require("../models/User");
 const Property = require("../models/PropertyListing");
 const { saveProperty, unsaveProperty } = require('../controllers/userController');
 
-router.get("/profile", protect, async (req, res) => {
+router.get("/profile", verifyToken, async (req, res) => {
   res.render("users/profile", { user: req.user });
 });
 
 
-router.get("/my-listings", protect, async (req, res) => {
+router.get("/my-listings", verifyToken, async (req, res) => {
   if (req.user.role !== "Owner") {
     return res.status(403).send("Access denied");
   }
@@ -20,7 +20,7 @@ router.get("/my-listings", protect, async (req, res) => {
 });
 
 
-router.post("/update", protect, async (req, res) => {
+router.post("/update", verifyToken, async (req, res) => {
   const { name, email } = req.body;
   try {
     const updatedUser = await User.findByIdAndUpdate(
@@ -34,8 +34,8 @@ router.post("/update", protect, async (req, res) => {
   }
 });
 
-router.post('/save/:id', protect, saveProperty);
+router.post('/save/:id', verifyToken, saveProperty);
 
-router.delete('/unsave/:id', protect, unsaveProperty);
+router.delete('/unsave/:id', verifyToken, unsaveProperty);
 
 module.exports = router

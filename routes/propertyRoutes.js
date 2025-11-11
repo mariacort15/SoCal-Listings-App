@@ -3,6 +3,7 @@ const router = express.Router();
 
 
 const { verifyToken } = require("../middleware/authMiddleware.js");
+const { authorizeRoles } = require("../middleware/authMiddleware.js");
 
 
 const {
@@ -55,6 +56,30 @@ router.get("/search", async (req, res) => {
   const results = await PropertyListing.find(query);
   res.render("properties/search", { properties: results });
 });
+
+router.get("/:id/edit", verifyToken, authorizeRoles("Owner", "Admin"), async (req, res) => {
+  const property = await Property.findById(req.params.id);
+  if (!property) return res.status(404).send("Property not found");
+  res.render("properties/edit", { property });
+});
+
+router.put("/:id", verifyToken, authorizeRoles("Owner", "Admin"), updateProperty);
+
+router.get(
+  "/new",
+  verifyToken,
+  authorizeRoles("Owner", "Admin"),
+  (req, res) => {
+    res.render("properties/new");
+  }
+);
+
+router.post(
+  "/",
+  verifyToken,
+  authorizeRoles("Owner", "Admin"),
+  createProperty
+);
 
 
 module.exports = router;
